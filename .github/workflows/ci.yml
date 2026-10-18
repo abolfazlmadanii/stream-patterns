@@ -22,6 +22,7 @@ jobs:
           java-version: "17"
           cache: maven
 
+      # Flink 2.3.0 is on Maven Central (org.apache.flink:flink-streaming-java:2.3.0).
       - name: Verify with Flink ${{ matrix.flink-version }}
         continue-on-error: ${{ matrix.flink-version == '2.3.0' }}
         run: mvn -B verify -Dflink.version=${{ matrix.flink-version }}

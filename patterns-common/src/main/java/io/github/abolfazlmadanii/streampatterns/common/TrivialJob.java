@@ -1,4 +1,4 @@
-package dev.streampatterns.common;
+package io.github.abolfazlmadanii.streampatterns.common;
 
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;

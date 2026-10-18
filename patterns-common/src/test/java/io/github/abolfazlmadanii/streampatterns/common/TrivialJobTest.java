@@ -1,4 +1,4 @@
-package dev.streampatterns.common;
+package io.github.abolfazlmadanii.streampatterns.common;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

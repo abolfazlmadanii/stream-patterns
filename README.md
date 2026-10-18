@@ -12,11 +12,13 @@ Requires JDK 17 and Maven 3.9+.
 mvn -B verify
 ```
 
-The default Flink version is defined in the root `pom.xml` (`flink.version`, currently 2.2.1). Override it for a one-off build:
+The default Flink version is defined in the root `pom.xml` (`flink.version`, currently 2.2.1). Override it for a one-off build against another release on Maven Central (for example Flink 2.3.0):
 
 ```bash
-mvn -B verify -Dflink.version=2.2.1
+mvn -B verify -Dflink.version=2.3.0
 ```
+
+CI also runs `mvn -B verify -Dflink.version=2.3.0` on JDK 17 as a forward-compatibility check; that matrix leg is allowed to fail (`continue-on-error`) until the repo fully tracks 2.3.x.
 
 Tests will use [streamproof](https://github.com/abolfazlmadanii/streamproof), a companion correctness harness.
 
