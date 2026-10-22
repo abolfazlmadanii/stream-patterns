@@ -24,6 +24,7 @@
   <modules>
     <module>patterns-common</module>
     <module>testkit</module>
+    <module>platform</module>
   </modules>
 
   <properties>

@@ -12,6 +12,22 @@ Requires JDK 17 and Maven 3.9+.
 mvn -B verify
 ```
 
+### Local platform (optional, Docker)
+
+Kafka 4.3.1 (KRaft) and Flink 2.2.1 (one jobmanager, two taskmanagers) for local work. **GitHub Actions does not run Docker**; `mvn verify` uses Flink `MiniCluster` only.
+
+```bash
+make up    # docker compose up -d --wait (healthchecks)
+make down  # remove containers, networks, and volumes
+make run   # testkit smoke on MiniCluster (no Docker required)
+```
+
+`make run` is the same smoke test whether or not the compose stack is up: it runs `TestkitSmokeJobTest` via Maven. Use `make up` when you need Kafka (`localhost:9092`) or the Flink UI (http://localhost:8081). See [platform/README.md](platform/README.md).
+
+```bash
+mvn -B -pl testkit -am test -Dtest=TestkitSmokeJobTest
+```
+
 The default Flink version is defined in the root `pom.xml` (`flink.version`, currently 2.2.1). Override it for a one-off build against another release on Maven Central (for example Flink 2.3.0):
 
 ```bash
