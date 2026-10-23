@@ -4,22 +4,28 @@ A catalog of streaming data modeling patterns for Apache Flink and Kafka, under 
 
 **Status:** early. No patterns are published yet.
 
-## Build and run
+## Build and test
 
-Requires JDK 17 and Maven 3.9+.
-
-```bash
-mvn -B verify
-```
-
-The default Flink version is defined in the root `pom.xml` (`flink.version`, currently 2.2.1). Override it for a one-off build against another release on Maven Central (for example Flink 2.3.0):
+Requires [uv](https://docs.astral.sh/uv/) and Python **3.12**.
 
 ```bash
-mvn -B verify -Dflink.version=2.3.0
+uv sync
+uv run ruff check
+uv run pytest
 ```
 
-CI also runs `mvn -B verify -Dflink.version=2.3.0` on JDK 17 as a forward-compatibility check; that matrix leg is allowed to fail (`continue-on-error`) until the repo fully tracks 2.3.x.
+GitHub Actions runs `ruff` and `pytest` on every push (no Docker).
+
+Pinned in `pyproject.toml`: **pytest**, **hypothesis**, **ruff**, **testcontainers** 4.15 (optional local Kafka). Flink jobs target **PyFlink 2.2.1**. CI does not start containers.
 
 Tests will use [streamproof](https://github.com/abolfazlmadanii/streamproof), a companion correctness harness.
+
+## Layout
+
+| Package | Role |
+|---------|------|
+| `streampatterns.testkit` | Seeded event generator, `Oracle` protocol, pytest fixtures for local PyFlink and optional Docker |
+
+See [docs/ROADMAP.md](docs/ROADMAP.md) for architecture notes.
 
 Licensed under the [Apache License 2.0](LICENSE).

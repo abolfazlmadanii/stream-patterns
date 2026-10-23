@@ -1,6 +1,9 @@
-target/
-.idea/
-*.iml
-.classpath
-.project
-.settings/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+dist/
+*.egg-info/
+.coverage
+htmlcov/
