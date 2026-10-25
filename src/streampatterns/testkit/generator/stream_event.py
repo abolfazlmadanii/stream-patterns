@@ -1,11 +1,3 @@
-from dataclasses import dataclass
+from streampatterns.patterns_common.events import StreamEvent
 
-
-@dataclass(frozen=True, slots=True)
-class StreamEvent:
-    """Synthetic stream record used by the seeded event generator."""
-
-    event_id: str
-    event_time_millis: int
-    category: str
-    amount_cents: int
+__all__ = ["StreamEvent"]
