@@ -22,7 +22,7 @@ Tests will use [streamproof](https://github.com/abolfazlmadanii/streamproof), a 
 
 ## Pattern: late data (P05)
 
-Bounded-out-of-orderness event-time watermarks, tumbling windows, and a **side output** for late records.
+Bounded-out-of-orderness event-time watermarks and a **side output** (`LATE_EVENTS_TAG`) for very-late records.
 
 - Job: `streampatterns.patterns.late_data.job.wire_late_data`
 - Reference oracle: `streampatterns.patterns.late_data.reference.LateDataOracle`

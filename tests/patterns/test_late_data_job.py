@@ -14,12 +14,11 @@ def test_late_data_smoke_on_time_events(require_jdk: None) -> None:
     env.set_parallelism(1)
     on_time_stream, late_stream = wire_late_data(env, events)
     on_time, late = collect_late_data(on_time_stream, late_stream)
-    assert "on-1" in on_time
-    assert "on-2" in on_time
+    assert on_time == ["on-1", "on-2"]
     assert late == []
 
 
-def test_late_data_smoke_matches_oracle_on_time_ids(require_jdk: None) -> None:
+def test_late_data_routes_very_late_record_to_side_output(require_jdk: None) -> None:
     events = [
         StreamEvent("on-1", 9_000, "click", 1),
         StreamEvent("on-2", 20_000, "purchase", 2),
@@ -35,7 +34,5 @@ def test_late_data_smoke_matches_oracle_on_time_ids(require_jdk: None) -> None:
 
     assert expected_on_time == ["on-1", "on-2"]
     assert expected_late == ["late-1"]
-    for event_id in expected_on_time:
-        assert event_id in on_time
-    assert "late-1" not in on_time
-    assert late == [] or "late-1" in late
+    assert on_time == expected_on_time
+    assert late == expected_late
