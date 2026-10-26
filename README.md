@@ -27,6 +27,7 @@ Bounded-out-of-orderness event-time watermarks and a **side output** (`LATE_EVEN
 - Job: `streampatterns.patterns.late_data.job.wire_late_data`
 - Reference oracle: `streampatterns.patterns.late_data.reference.LateDataOracle`
 - Smoke tests: `tests/patterns/test_late_data_job.py` (`from_collection`, no Kafka)
+- Optional Kafka I/O: `wire_late_data_from_kafka` / `wire_late_data_to_kafka` with connector jar `5.0.0-2.2` (`make -f platform/Makefile download-kafka-connector` or `STREAM_PATTERNS_KAFKA_CONNECTOR_JAR`)
 
 ```bash
 uv run pytest tests/patterns/test_late_data_job.py -v

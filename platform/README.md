@@ -17,6 +17,9 @@ From the repository root:
 make -f platform/Makefile up
 make -f platform/Makefile down
 make -f platform/Makefile test
+make -f platform/Makefile download-kafka-connector
 ```
+
+For Kafka-backed late-data jobs, download the Flink Kafka connector `5.0.0-2.2` jar (or set `STREAM_PATTERNS_KAFKA_CONNECTOR_JAR` to your copy), then use `wire_late_data_from_kafka` / `wire_late_data_to_kafka`.
 
 After `up`: Kafka `localhost:9092`, Flink UI http://localhost:8081.

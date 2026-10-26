@@ -10,6 +10,13 @@ from pyflink.datastream.functions import KeyedProcessFunction
 from pyflink.datastream.output_tag import OutputTag
 from pyflink.datastream.state import ValueStateDescriptor
 
+from streampatterns.patterns.late_data.kafka_connector import (
+    LateDataKafkaConfig,
+    apply_kafka_connector_jar,
+    attach_late_data_kafka_sinks,
+    decode_kafka_payload,
+    kafka_event_source,
+)
 from streampatterns.patterns_common.events import StreamEvent
 
 if TYPE_CHECKING:
@@ -72,6 +79,46 @@ def wire_late_data(
         .with_timestamp_assigner(_StreamEventTimestampAssigner())
     )
     timed = env.from_collection(events).assign_timestamps_and_watermarks(watermark_strategy)
+    return _split_late_stream(timed, max_out_of_orderness_millis)
+
+
+def wire_late_data_from_kafka(
+    env: StreamExecutionEnvironment,
+    kafka_config: LateDataKafkaConfig,
+    *,
+    max_out_of_orderness_millis: int = DEFAULT_MAX_OUT_OF_ORDERNESS_MS,
+) -> tuple[DataStream, DataStream]:
+    """Read encoded events from Kafka, apply watermarks, and split late records."""
+    apply_kafka_connector_jar(env)
+    watermark_strategy = (
+        WatermarkStrategy.for_bounded_out_of_orderness(
+            Duration.of_millis(max_out_of_orderness_millis)
+        )
+        .with_timestamp_assigner(_StreamEventTimestampAssigner())
+    )
+    source = kafka_event_source(kafka_config)
+    timed = env.from_source(
+        source,
+        watermark_strategy,
+        "late-data-kafka-source",
+        Types.PRIMITIVE_ARRAY(Types.BYTE()),
+    ).map(decode_kafka_payload, Types.PICKLED_BYTE_ARRAY())
+    return _split_late_stream(timed, max_out_of_orderness_millis)
+
+
+def wire_late_data_to_kafka(
+    on_time_stream: DataStream,
+    late_stream: DataStream,
+    kafka_config: LateDataKafkaConfig,
+) -> None:
+    """Attach Kafka sinks for on-time and late event-id streams."""
+    attach_late_data_kafka_sinks(on_time_stream, late_stream, kafka_config)
+
+
+def _split_late_stream(
+    timed: DataStream,
+    max_out_of_orderness_millis: int,
+) -> tuple[DataStream, DataStream]:
     on_time = timed.key_by(lambda _: "all").process(
         _LateDataSplitter(max_out_of_orderness_millis),
         Types.STRING(),
