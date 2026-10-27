@@ -2,7 +2,7 @@
 
 A catalog of streaming data modeling patterns for Apache Flink and Kafka, under development. Each pattern is planned to ship with a written explanation, the data model, an executable reference model, a Flink SQL implementation, tests, and its known failure modes.
 
-**Status:** early. The first executable pattern (late data) is available under `streampatterns.patterns.late_data`.
+**Status:** early. Patterns under `streampatterns.patterns` include late data (PyFlink job) and keyed deduplication (reference model).
 
 ## Build and test
 
@@ -31,6 +31,17 @@ Bounded-out-of-orderness event-time watermarks and a **side output** (`LATE_EVEN
 
 ```bash
 uv run pytest tests/patterns/test_late_data_job.py -v
+```
+
+## Pattern: keyed deduplication (TTL)
+
+Per-key event-time deduplication: the first record for a key wins until `event_time + TTL`, then the key accepts a new winner.
+
+- Reference: `streampatterns.patterns.keyed_dedup.reference.KeyedDedupReference`
+- Tests: `tests/patterns/test_keyed_dedup_reference.py` (hypothesis properties; no PyFlink job yet)
+
+```bash
+uv run pytest tests/patterns/test_keyed_dedup_reference.py -v
 ```
 
 ## Local platform (optional)
