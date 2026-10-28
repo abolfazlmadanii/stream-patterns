@@ -2,6 +2,10 @@ name: CI
 
 on:
   push:
+    branches:
+      - main
+      - week2-python-port
+      - p03-cdc-changelog
   pull_request:
 
 jobs:
@@ -9,6 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
 
       - uses: astral-sh/setup-uv@v6
         with:

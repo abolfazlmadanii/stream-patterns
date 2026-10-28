@@ -2,13 +2,21 @@
 
 from __future__ import annotations
 
+import shutil
 from collections.abc import Iterator
 
 import pytest
 
 
 @pytest.fixture
-def local_stream_env() -> Iterator[object]:
+def require_jdk() -> None:
+    """Skip when no JDK is on PATH (PyFlink local execution needs a JVM)."""
+    if shutil.which("java") is None:
+        pytest.skip("PyFlink local execution requires a JDK on PATH")
+
+
+@pytest.fixture
+def local_stream_env(require_jdk: None) -> Iterator[object]:
     """Yield a local PyFlink execution environment with parallelism 1."""
     from pyflink.datastream import StreamExecutionEnvironment
 

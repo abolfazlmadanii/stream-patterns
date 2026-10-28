@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import random
 
-from streampatterns.testkit.generator.stream_event import StreamEvent
+from streampatterns.patterns_common.events import StreamEvent
 
 _CATEGORIES = ("click", "purchase", "refund", "signup")
 
