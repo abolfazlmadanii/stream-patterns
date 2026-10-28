@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - week2-python-port
+      - p03-cdc-changelog
   pull_request:
 
 jobs:

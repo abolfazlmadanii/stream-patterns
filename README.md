@@ -2,7 +2,7 @@
 
 A catalog of streaming data modeling patterns for Apache Flink and Kafka, under development. Each pattern is planned to ship with a written explanation, the data model, an executable reference model, a Flink SQL implementation, tests, and its known failure modes.
 
-**Status:** early. Patterns under `streampatterns.patterns` include late data (PyFlink job) and keyed deduplication (reference model).
+**Status:** early. Patterns under `streampatterns.patterns` include late data, keyed deduplication, and CDC changelog (reference models).
 
 ## Build and test
 
@@ -42,6 +42,19 @@ Per-key event-time deduplication: the first record for a key wins until `event_t
 
 ```bash
 uv run pytest tests/patterns/test_keyed_dedup_reference.py -v
+```
+
+## Pattern: CDC changelog (P03)
+
+Debezium-style envelopes (`c` / `u` / `r` / `d`, key, before/after, source LSN) folded into a table. Per key, events apply in LSN order; `c`, `u`, and `r` upsert the after-image, `d` removes the row. Positions at or below the key’s last applied LSN are ignored so replays and duplicates are idempotent.
+
+Properties checked in tests: duplicate events change nothing; interleaving keys preserves the outcome when each key’s order is kept; the fold matches a direct dict simulation; delete then create leaves the new row.
+
+- Reference: `streampatterns.patterns.cdc_changelog.reference.CdcChangelogReference`
+- Tests: `tests/patterns/test_cdc_changelog_reference.py`
+
+```bash
+uv run pytest tests/patterns/test_cdc_changelog_reference.py -v
 ```
 
 ## Local platform (optional)
